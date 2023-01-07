@@ -54,6 +54,7 @@ RUN set -ex \
     && cd /opt/domoticz/userdata/plugins/Broadlink \
     && python3 -m pip install python-broadlink-master/. \
     && cp -r /root/.local/lib/python3.9/site-packages/* /usr/local/lib/python3.9/dist-packages/ \
+    && chmod +x /opt/domoticz/userdata/plugins/Broadlink/scr/dombr.sh \
     && rm -rf /opt/domoticz/userdata/plugins/* \
     && apt-get purge -y \
         golang \
