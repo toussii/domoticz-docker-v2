@@ -1,4 +1,4 @@
-FROM debian:buster-slim
+FROM debian:11.6-slim
 
 ARG APP_VERSION
 ARG APP_HASH
@@ -22,6 +22,8 @@ WORKDIR /opt/domoticz
 
 ARG DEBIAN_FRONTEND=noninteractive
 
+COPY ./Broadlink /opt/domoticz/userdata/plugins/Broadlink
+
 RUN set -ex \
     && apt-get update \
     && apt-get install --no-install-recommends -y \
@@ -32,9 +34,11 @@ RUN set -ex \
         libusb-0.1-4 \
         libsqlite3-0 \
         curl libcurl4 libcurl4-gnutls-dev \
-        libpython3.7-dev \
+        libpython3-dev \
         python3 \
         python3-pip \
+        golang \
+        gcc \
     && OS="$(uname -s | sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/')" \
     && MACH=$(uname -m) \
     && if [ ${MACH} = "armv6l" ]; then MACH = "armv7l"; fi \
@@ -46,8 +50,14 @@ RUN set -ex \
     && rm domoticz.tgz \
     && mkdir -p /opt/domoticz/userdata \
     && rm -rf /var/lib/apt/lists/* \
-    && ln -s /usr/bin/pip3 /usr/bin/pip \
-    && pip3 install setuptools requests
+    && pip3 install -U pip setuptools wheel googletrans translate requests_toolbelt irgen requests tradfricoap py3coap broadlink pyaes tuyaha --user --no-cache-dir \
+    && cd /opt/domoticz/userdata/plugins/Broadlink \
+    && python3 -m pip install python-broadlink-master/. \
+    && cp -r /root/.local/lib/python3.9/site-packages/* /usr/local/lib/python3.9/dist-packages/ \
+    && rm -rf /opt/domoticz/userdata/plugins/* \
+    && apt-get purge -y \
+        golang \
+        gcc
 
 VOLUME /opt/domoticz/userdata
 
