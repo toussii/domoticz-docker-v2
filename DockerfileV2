@@ -8,12 +8,16 @@ cd ~
 curl -O https://dl.google.com/go/go1.22.1.linux-arm64.tar.gz
 tar xvf go1.22.1.linux-arm64.tar.gz
 mv go /usr/local
-export GOPATH=$HOME/work
-export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
-cd /opt/domoticz/plugins
+mkdir -p /opt/domoticz/userdata/plugins
+cd /opt/domoticz/userdata/plugins
 git clone https://github.com/zak-45/Broadlink-Domoticz-plugin.git Broadlink
 git clone https://github.com/Xenomes/Domoticz-TUYA-Plugin.git TUYA
 git clone https://github.com/moroen/IKEA-Tradfri-plugin.git IKEA-Tradfri
+chown -R 1000:1000 Broadlink
+chown -R 1000:1000 TUYA
+chown -R 1000:1000 IKEA-Tradfri
 chmod +x Broadlink/scr/dombr.sh
+export GOPATH=$HOME/work
+export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 pip3 install cryptography==40.0.0 broadlink==0.18.3 setuptools wheel googletrans translate requests==2.23.0 requests_toolbelt irgen tuyaha tradfricoap
 EOF
